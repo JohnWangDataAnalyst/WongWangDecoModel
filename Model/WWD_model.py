@@ -86,8 +86,8 @@ class WongWangDeco():
         
         self.Tr = Tr              # time interval between two data points
         
-        if SC.shape[0] == SC.shape[1]: ### SC is a square matrix 
-            self.param['ROI_num'] = SC.shape[0] ## define the number of nodes
+        if sc.shape[0] == sc.shape[1]: ### SC is a square matrix 
+            self.param['ROI_num'] = sc.shape[0] ## define the number of nodes
             self.sc = sc   #### define the structural connectivity 
             self.l_s = -(np.diag(np.sum(sc, axis=1)) -sc) ### define negative Laplacian
             
