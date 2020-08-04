@@ -86,12 +86,12 @@ class WongWangDeco():
         
         self.Tr = Tr              # time interval between two data points
         
-        if SC.shape[0] == SC.shape[1]: ### SC is a square matrix 
-            self.param['ROI_num'] = SC.shape[0] ## define the number of nodes
+        if sc.shape[0] == sc.shape[1]: ### SC is a square matrix 
+            self.param['ROI_num'] = sc.shape[0] ## define the number of nodes
             self.sc = sc   #### define the structural connectivity 
             self.l_s = -(np.diag(np.sum(sc, axis=1)) -sc) ### define negative Laplacian
             
-        if TS.shape[1]  == self.param['ROI_num']: ## check ts shape: shape 1 should the same as the number of nodes
+        if ts.shape[1]  == self.param['ROI_num']: ## check ts shape: shape 1 should the same as the number of nodes
             self.ts = ts   #### define fMRI time series which is a matrix with num_datapoints X num of nodes
             
             
@@ -357,6 +357,7 @@ class WongWangDeco():
         g_EI = self.param["g_EI"]
         w = self.param["sigma"]
         E0 = self.param["E0"]
+        
         grad = np.zeros((5))
 
         err=[]
@@ -377,7 +378,7 @@ class WongWangDeco():
         v1dgEI_ls=[]
         v1dsig_ls=[]
 
-        for i in range(batch_size):
+        for i in range(self.batch_size):
             xg1 = results_g[i]
             v = results_x[i][3]
             q = results_x[i][2]
@@ -415,15 +416,15 @@ class WongWangDeco():
                 v2= np.array(v_ls)[:,j]
                 q2= np.array(q_ls)[:,j]
 
-                riidq1 = 2.0*(V/E0*(-k1-k2/v1)-edq_sum[i]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
-                rjjdq2 = 2.0* (V/E0*(-k1-k2/v2)-edq_sum[j]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdq1 = (V/E0*(-k1-k2/v1)-edq_sum[i]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdq2 = (V/E0*(-k1-k2/v2)-edq_sum[j]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                riidq1 = 2.0*(V/E0*(-k1-k2/v1)-edq_sum[i]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                rjjdq2 = 2.0* (V/E0*(-k1-k2/v2)-edq_sum[j]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdq1 = (V/E0*(-k1-k2/v1)-edq_sum[i]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdq2 = (V/E0*(-k1-k2/v2)-edq_sum[j]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
 
-                riidv1 = 2.0*(V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
-                rjjdv2 = 2.0*(V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdv1 = (V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdv2 = (V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                riidv1 = 2.0*(V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                rjjdv2 = 2.0*(V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdv1 = (V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdv2 = (V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
 
                 edq1 = rijdq1/np.sqrt(rjj)/np.sqrt(rii)-0.5*np.power(rii, -1.5)*riidq1/np.sqrt(rjj)*rij
                 edq2 = rijdq2/np.sqrt(rjj)/np.sqrt(rii)-0.5*np.power(rjj, -1.5)*rjjdq2/np.sqrt(rii)*rij
@@ -601,7 +602,7 @@ class WongWangDeco():
             err_bold=np.array(err_y)
             states_sim = np.concatenate(states, axis = 0)
             FC_sim = np.corrcoef(ts_sim.T)
-            FC_emp = np.corrcoef(ts.T)
+            FC_emp = np.corrcoef(self.ts.T)
             cost_ls.append(np.corrcoef(FC_sim[np.tril_indices(ROI_num, -1)], FC_emp[np.tril_indices(ROI_num, -1)])[0,1])
 
         return np.array(cost_ls), np.array(theta_ls), states_sim, err_bold, np.array(err_epoch)###### test your model with the optimal model parameters
