@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "simBOLD.py", line 78, in <module>
+    simBOLD(sys.argv[1])
+  File "simBOLD.py", line 68, in simBOLD
+    cost, theta, states, errors, e_ep = md_wwd.deco_train(batch_size, epoch_num, alpha)
+  File "/brunhild/mcintosh_lab/jwang/git_Lab/WWD_Model/Model/WWD_model.py", line 605, in deco_train
+    FC_emp = np.corrcoef(ts.T)
+NameError: name 'ts' is not defined
