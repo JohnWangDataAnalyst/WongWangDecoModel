@@ -91,7 +91,7 @@ class WongWangDeco():
             self.sc = sc   #### define the structural connectivity 
             self.l_s = -(np.diag(np.sum(sc, axis=1)) -sc) ### define negative Laplacian
             
-        if TS.shape[1]  == self.param['ROI_num']: ## check ts shape: shape 1 should the same as the number of nodes
+        if ts.shape[1]  == self.param['ROI_num']: ## check ts shape: shape 1 should the same as the number of nodes
             self.ts = ts   #### define fMRI time series which is a matrix with num_datapoints X num of nodes
             
             
@@ -415,15 +415,15 @@ class WongWangDeco():
                 v2= np.array(v_ls)[:,j]
                 q2= np.array(q_ls)[:,j]
 
-                riidq1 = 2.0*(V/E0*(-k1-k2/v1)-edq_sum[i]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
-                rjjdq2 = 2.0* (V/E0*(-k1-k2/v2)-edq_sum[j]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdq1 = (V/E0*(-k1-k2/v1)-edq_sum[i]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdq2 = (V/E0*(-k1-k2/v2)-edq_sum[j]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                riidq1 = 2.0*(V/E0*(-k1-k2/v1)-edq_sum[i]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                rjjdq2 = 2.0* (V/E0*(-k1-k2/v2)-edq_sum[j]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdq1 = (V/E0*(-k1-k2/v1)-edq_sum[i]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdq2 = (V/E0*(-k1-k2/v2)-edq_sum[j]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
 
-                riidv1 = 2.0*(V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
-                rjjdv2 = 2.0*(V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdv1 = (V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
-                rijdv2 = (V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                riidv1 = 2.0*(V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
+                rjjdv2 = 2.0*(V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdv1 = (V/E0*(-k3+k2*q1/v1**2) -edv_sum[i]/self.batch_size)*(simBOLD[:,j]-simBOLD[:,j].mean())
+                rijdv2 = (V/E0*(-k3+k2*q2/v2**2) -edv_sum[j]/self.batch_size)*(simBOLD[:,i]-simBOLD[:,i].mean())
 
                 edq1 = rijdq1/np.sqrt(rjj)/np.sqrt(rii)-0.5*np.power(rii, -1.5)*riidq1/np.sqrt(rjj)*rij
                 edq2 = rijdq2/np.sqrt(rjj)/np.sqrt(rii)-0.5*np.power(rjj, -1.5)*rjjdq2/np.sqrt(rii)*rij
